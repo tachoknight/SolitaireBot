@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0F9306782514088600700B5C /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9306772514088600700B5C /* main.swift */; };
+		0F93068025140A9000700B5C /* card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F93067F25140A9000700B5C /* card.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,7 @@
 /* Begin PBXFileReference section */
 		0F9306742514088600700B5C /* SolitaireBot */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SolitaireBot; sourceTree = BUILT_PRODUCTS_DIR; };
 		0F9306772514088600700B5C /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		0F93067F25140A9000700B5C /* card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = card.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +60,7 @@
 			isa = PBXGroup;
 			children = (
 				0F9306772514088600700B5C /* main.swift */,
+				0F93067F25140A9000700B5C /* card.swift */,
 			);
 			path = SolitaireBot;
 			sourceTree = "<group>";
@@ -120,6 +123,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0F9306782514088600700B5C /* main.swift in Sources */,
+				0F93068025140A9000700B5C /* card.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
