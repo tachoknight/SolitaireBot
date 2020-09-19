@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		0F9306782514088600700B5C /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9306772514088600700B5C /* main.swift */; };
 		0F93068025140A9000700B5C /* card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F93067F25140A9000700B5C /* card.swift */; };
+		0F93068325140F1600700B5C /* game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F93068225140F1600700B5C /* game.swift */; };
+		0F930687251410DA00700B5C /* foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F930686251410DA00700B5C /* foundation.swift */; };
+		0F93068B2514118700700B5C /* pile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F93068A2514118700700B5C /* pile.swift */; };
+		0F93068E2514172A00700B5C /* tableau.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F93068D2514172A00700B5C /* tableau.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -27,6 +31,11 @@
 		0F9306742514088600700B5C /* SolitaireBot */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SolitaireBot; sourceTree = BUILT_PRODUCTS_DIR; };
 		0F9306772514088600700B5C /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		0F93067F25140A9000700B5C /* card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = card.swift; sourceTree = "<group>"; };
+		0F93068225140F1600700B5C /* game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = game.swift; sourceTree = "<group>"; };
+		0F9306852514102700700B5C /* notes.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = notes.txt; sourceTree = SOURCE_ROOT; };
+		0F930686251410DA00700B5C /* foundation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = foundation.swift; sourceTree = "<group>"; };
+		0F93068A2514118700700B5C /* pile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pile.swift; sourceTree = "<group>"; };
+		0F93068D2514172A00700B5C /* tableau.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tableau.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +70,11 @@
 			children = (
 				0F9306772514088600700B5C /* main.swift */,
 				0F93067F25140A9000700B5C /* card.swift */,
+				0F93068225140F1600700B5C /* game.swift */,
+				0F9306852514102700700B5C /* notes.txt */,
+				0F930686251410DA00700B5C /* foundation.swift */,
+				0F93068A2514118700700B5C /* pile.swift */,
+				0F93068D2514172A00700B5C /* tableau.swift */,
 			);
 			path = SolitaireBot;
 			sourceTree = "<group>";
@@ -122,8 +136,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0F93068325140F1600700B5C /* game.swift in Sources */,
 				0F9306782514088600700B5C /* main.swift in Sources */,
+				0F93068E2514172A00700B5C /* tableau.swift in Sources */,
+				0F930687251410DA00700B5C /* foundation.swift in Sources */,
 				0F93068025140A9000700B5C /* card.swift in Sources */,
+				0F93068B2514118700700B5C /* pile.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

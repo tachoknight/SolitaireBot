@@ -1,6 +1,29 @@
 
 import Foundation
 
+enum Face: Int {
+    case up = 0
+    case down = 1
+
+    func simpleDescription() -> String {
+        switch self {
+        case .up:
+            return "face up"
+        case .down:
+            return "face down"
+        }
+    }
+    
+    func face() -> String {
+        switch self {
+        case .up:
+            return "up"
+        case .down:
+            return "down"
+        }
+    }
+}
+
 enum Suit: Int {
     case hearts = 100
     case spades = 200
@@ -80,7 +103,7 @@ enum Rank: Int {
         case .king:
             return "king"
         default:
-            return String(self.rawValue)
+            return String(rawValue)
         }
     }
 
@@ -95,7 +118,7 @@ enum Rank: Int {
         case .king:
             return "K"
         default:
-            return String(self.rawValue)
+            return String(rawValue)
         }
     }
 }
@@ -107,11 +130,12 @@ enum Rank: Int {
 struct Card: Hashable, CustomStringConvertible {
     var rank: Rank
     var suit: Suit
+    var face: Face
     // For storing in dictionaries
     var hashValue: Int {
         return rank.rawValue + suit.rawValue
     }
-    
+
     func simpleDescription() -> String {
         return "The \(rank.simpleDescription()) of \(suit.simpleDescription())"
     }
@@ -136,7 +160,8 @@ func createDeck() -> [Card] {
     while let rank = Rank(rawValue: n) {
         var m = 100
         while let suit = Suit(rawValue: m) {
-            deck.append(Card(rank: rank, suit: suit))
+            // By default all the cards are assembled face down
+            deck.append(Card(rank: rank, suit: suit, face: Face.down))
             m += 100
         }
         n += 1
