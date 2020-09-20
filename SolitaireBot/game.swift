@@ -64,6 +64,7 @@ extension Game {
 
         #if DEBUG
             if let cardDeck = self.deck {
+                print("Our deck...")
                 for card in cardDeck {
                     print(card)
                 }

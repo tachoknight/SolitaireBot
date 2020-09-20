@@ -4,6 +4,7 @@ import Foundation
 enum Face: Int {
     case up = 0
     case down = 1
+    case noface = 2
 
     func simpleDescription() -> String {
         switch self {
@@ -11,15 +12,20 @@ enum Face: Int {
             return "face up"
         case .down:
             return "face down"
+        case .noface:
+            return "no face"
         }
     }
-    
+
     func face() -> String {
         switch self {
         case .up:
             return "up"
         case .down:
             return "down"
+        case .noface:
+            return "no face"
+
         }
     }
 }
@@ -78,6 +84,7 @@ enum Suit: Int {
 }
 
 enum Rank: Int {
+    case null = 0
     case ace = 1
     case two
     case three
@@ -137,12 +144,38 @@ struct Card: Hashable, CustomStringConvertible {
     }
 
     func simpleDescription() -> String {
+        if isNullCard() {
+            return "Null Card"
+        }
+        
         return "The \(rank.simpleDescription()) of \(suit.simpleDescription())"
+    }
+
+    func fullDescription(shouldShowFace: Bool) -> String {
+        if isNullCard() {
+            return " "
+        } else if shouldShowFace == false, face == .down {
+            return "X"
+        } else {
+            return description
+        }
     }
 
     // From CustomStringConvertable protocol
     var description: String {
+        if isNullCard() {
+            return "N"
+        }
+        
         return "\(rank.symbol())\(suit.symbol())"
+    }
+}
+
+// A Null card is basically a placeholder for where a card
+// could be, but isn't
+extension Card {
+    func isNullCard() -> Bool {
+        return rank == .null
     }
 }
 
