@@ -25,21 +25,27 @@ struct Tableau {
     // This function sets up the traditional starting positions
     // for the cards
     mutating func resetWith(_ deck: inout [Card]) {
+        var tempColumns = [Int: Pile]()
         for col in 0...COLUMNS {
-            var pile = Pile()
-            for row in 0...col {
-                var card = deck.removeFirst()
-                if row == col {
-                    card.face = .up
-                } else {
-                    card.face = .down
-                }
-                pile.cards.append(card)
-            }
-
-            self.columns[col] = pile
+            let pile = Pile()
+            tempColumns[col] = pile
         }
 
+        for row in 0...COLUMNS {
+            for col in 0...COLUMNS {
+                if row <= col {
+                    var card = deck.removeFirst()
+                    if row == col {
+                        card.face = .up
+                    } else {
+                        card.face = .down
+                    }
+                    tempColumns[col]?.cards.append(card)
+                }
+            }
+        }
+
+        self.columns = tempColumns
         printTableau(showAllCards: true)
     }
 }
@@ -63,7 +69,7 @@ extension Tableau {
                 // We want our pile in reversed order as the oldest card
                 // should be at the bottom
                 let pile = self.columns[col]
-                var cards = pile?.cards
+                let cards = pile?.cards
                 // cards?.reverse()
                 // The column may have no cards at this row, but we need to preserve
                 // the columns so we need to add a null card
