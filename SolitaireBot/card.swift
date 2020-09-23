@@ -25,11 +25,14 @@ enum Face: Int {
             return "down"
         case .noface:
             return "no face"
-
         }
     }
 }
-
+enum CardColor: Int {
+    case red = 0
+    case black = 1
+    case none = 2
+}
 enum Suit: Int {
     case hearts = 100
     case spades = 200
@@ -52,18 +55,18 @@ enum Suit: Int {
         }
     }
 
-    func color() -> String {
+    func color() -> CardColor {
         switch self {
         case .spades:
-            return "black"
+            return .black
         case .clubs:
-            return "black"
+            return .black
         case .diamonds:
-            return "red"
+            return .red
         case .hearts:
-            return "red"
+            return .red
         case .noSuit:
-            return "none"
+            return .none
         }
     }
 
@@ -147,7 +150,7 @@ struct Card: Hashable, CustomStringConvertible {
         if isNullCard() {
             return "Null Card"
         }
-        
+
         return "The \(rank.simpleDescription()) of \(suit.simpleDescription())"
     }
 
@@ -166,7 +169,7 @@ struct Card: Hashable, CustomStringConvertible {
         if isNullCard() {
             return "N"
         }
-        
+
         return "\(rank.symbol())\(suit.symbol())"
     }
 }

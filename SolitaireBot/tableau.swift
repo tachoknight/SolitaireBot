@@ -22,15 +22,27 @@ struct Tableau {
     // even in loops
     var columns = [Int: Pile]()
 
+    mutating func newWith(_ deck: inout [Card]) {
+        print("Creating new tableau...")
+        self.columns = newTableau(&deck)
+        printTableau(showAllCards: true)
+    }
+    
     // This function sets up the traditional starting positions
     // for the cards
-    mutating func resetWith(_ deck: inout [Card]) {
+    func newTableau(_ deck: inout [Card]) -> [Int: Pile] {
+        // This algorithm works by first setting up the arrays
+        // as values to the keys which are the columns of the
+        // tableau...
         var tempColumns = [Int: Pile]()
         for col in 0...COLUMNS {
             let pile = Pile()
             tempColumns[col] = pile
         }
 
+        // ...and we go row-by-row, column-by-column, to
+        // lay out the cards, as this is the traditional way
+        // in the game to build the initial tableau
         for row in 0...COLUMNS {
             for col in 0...COLUMNS {
                 if row <= col {
@@ -45,8 +57,7 @@ struct Tableau {
             }
         }
 
-        self.columns = tempColumns
-        printTableau(showAllCards: true)
+        return tempColumns        
     }
 }
 

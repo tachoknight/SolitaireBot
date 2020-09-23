@@ -42,6 +42,10 @@ struct Game {
         shuffleNewDeck()
         // And now let's set up the tableau
         setupTableau()
+
+        // And now the remaining cards get sent to the stock
+        self.stock.cards = self.deck!
+        self.stock.printPile("stock")
     }
 }
 
@@ -73,8 +77,6 @@ extension Game {
     }
 
     mutating func setupTableau() {
-        if var cardDeck = self.deck {
-            self.tableau.resetWith(&cardDeck)
-        }
+        self.tableau.newWith(&self.deck!)
     }
 }
