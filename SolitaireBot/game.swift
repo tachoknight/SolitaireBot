@@ -16,6 +16,11 @@ struct Game {
     // further analysis
     var deck: [Card]?
 
+    // This is the serial number of the game, basically the hash
+    // of the deck after it's been shuffled, so we can keep track
+    // of what games have been played
+    var serialNum: Int = 0
+
     // The waste pile is where the cards go that cannot be
     // played on any of the tableau piles
     var waste = Pile()
@@ -40,6 +45,8 @@ struct Game {
         createNewDeck()
         // And shuffle it
         shuffleNewDeck()
+        // And get the game's serial number
+        setSerialNumber()
         // And now let's set up the tableau
         setupTableau()
 
@@ -65,7 +72,6 @@ extension Game {
             self.deck?.myShuffle()
             shuffleLoop += 1
         } while shuffleLoop < 1000
-
         #if DEBUG
             if let cardDeck = self.deck {
                 print("Our deck...")
@@ -74,6 +80,17 @@ extension Game {
                 }
             }
         #endif
+    }
+
+    mutating func setSerialNumber() {
+        var deckLayout = ""
+        if let cardDeck = self.deck {
+            for card in cardDeck {
+                deckLayout += card.description
+            }
+        }
+        self.serialNum = deckLayout.hash
+        print("Hash value is \(deckLayout.hash)")
     }
 
     mutating func setupTableau() {

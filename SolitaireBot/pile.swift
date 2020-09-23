@@ -16,10 +16,12 @@ struct Pile {
 
 extension Pile {
     func printPile(_ pileName: String) {
+#if DEBUG
         print("\(pileName) cards --->")
         for card in cards {
             print(card)
         }
         print("<--- \(pileName) cards")
+#endif
     }
 }

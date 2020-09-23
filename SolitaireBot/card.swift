@@ -141,11 +141,12 @@ struct Card: Hashable, CustomStringConvertible {
     var rank: Rank
     var suit: Suit
     var face: Face
-    // For storing in dictionaries
-    var hashValue: Int {
-        return rank.rawValue + suit.rawValue
-    }
 
+    // For storing in dictionaries
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(rank.rawValue + suit.rawValue)
+    }
+    
     func simpleDescription() -> String {
         if isNullCard() {
             return "Null Card"
