@@ -44,9 +44,122 @@ import Foundation
 //      cards, using however many cards were there at the top
 //  10. Game is lost if no cards move from the waste to the tableau in two passes
 //  11. Game is won if all the cards on the tableau can be uncovered
+
 // MARK: - Logic
+
 extension Game {
+    // Play a game of solitaire
     func play() {
-        //for
+        var gameDone = false
+        
+        // Okay, here's our main loop. Once we break out
+        // of this loop the game is done, regardless of whether
+        // we won or not
+        repeat {
+            // First thing we do is check for anything on the
+            // tableau that's playable
+            playTableau()
+        } while gameDone == false
+    }
+    
+    // Check if the column is empty (so is eligible for a king to
+    // be played on it)
+    func isEmptyForColumn(_ col: Int) -> Bool {
+        return tableau.columns[col]?.cards.count == 0
+    }
+    
+    func getFaceUpCards(_ pile: Pile) -> [Card] {
+        var fuCards = [Card]()
+        
+        for card in pile.cards {
+            if card.face == .up {
+                fuCards.append(card)
+            }
+        }
+        
+        // There must *always* be a face-up card
+        assert(fuCards.count > 0)
+        return fuCards
+    }
+    
+    // This is the biggie. This function determines whether our "from" card can
+    // be played on the "to" card (i.e. the card we're trying to move (from) to the
+    // card at the bottom of a column (to)). We have to take into consideration the
+    // color of the card (but not the suit), and the card value. For example, a black
+    // two can only be played on top of a red three, and a red jack can only be played
+    // on top of a black queen.
+    func card(_ from: Card, canBePlayedOn to: Card) -> Bool {
+        // first test, are the two cards the same color? If so, then
+        // we can just call it early and return false
+        if from.suit.color() == to.suit.color() {
+            // Same colors, so we're out
+            return false
+        }
+        
+        // Okay, if we're here, then the two cards are different
+        // colors so now we have to see if the From card is exactly
+        // one less in value than the To card
+        if to.rank.rawValue - from.rank.rawValue == 1 {
+            // Woo, yes, the card we're trying to play (from)
+            // is one less in value than the card we're trying to it
+            // below (to). This means the from card will be able to be
+            // added to the pile of cards that to is at the bottom
+            // of
+            return true
+        }
+        
+        // Nope, the cards are too far apart from each other so this is
+        // not a playable combination
+        return false
+    }
+    // This function is responsible for taking an array of cards
+    // and the originating column and looking at the other columns'
+    // bottom card and see if it's playable
+    func tryToPlay(_ cards: [Card], from: Int) -> Bool {
+        var wasAbleToPlay = false
+        
+        // We want to move as many cards as possible in a turn, so
+        // we start at the top of the array because if we can match
+        // a card early, then all the other cards in the array will
+        // come along for the ride, woo.
+        for testCard in cards {
+            // So now let's go through the columns other than the one
+            // we came from
+            for col in 0...COLUMNS {
+                if col == from {
+                    // skip the column we came from
+                    continue
+                }
+            
+                // Now we need to get the bottom card of the
+                // pile for this column, which will be a face card
+                // and let's see if we can play on it
+                var bottomCard = tableau.columns[col]?.cards.last
+                assert(bottomCard?.face == .up)
+            
+                // And here we see if the card we got from the bottom
+                // of the pile can take the test card
+                var isPlayable = card(testCard, canBePlayedOn: bottomCard!)
+            }
+        }
+        
+        return wasAbleToPlay
+    }
+    
+    // This function controls all the logic around playing on
+    // the tableau and does not work with any of the waste cards
+    func playTableau() {
+        // okay, let's go through each of the columns...
+        for col in 0...COLUMNS {
+            if isEmptyForColumn(col) {
+                // Column is empty, so nothing to do
+                continue
+            }
+            // There will *always* be >= 1 face-up cards in
+            // each column's pile, or there will be no cards
+            let pile = tableau.columns[col]
+            let fuCards = getFaceUpCards(pile!)
+            var wasAbleToPlay = tryToPlay(fuCards, from: col)
+        }
     }
 }

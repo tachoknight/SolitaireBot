@@ -36,6 +36,8 @@ enum BoardPart: Int {
 // one card in the array), and all subsequent cards, if any, were
 // the cards below it
 struct Move {
+    // timestamp of when move occured
+    let ts = Date()
     var turn = 0
     var cards: [Card]
     var from: BoardPart

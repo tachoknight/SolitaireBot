@@ -92,7 +92,7 @@ enum Suit: Int, CaseIterable {
 }
 
 // MARK: - Rank
-enum Rank: Int {
+enum Rank: Int {    
     case null = 0
     case ace = 1
     case two
