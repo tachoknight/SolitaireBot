@@ -14,4 +14,14 @@ import Foundation
 struct Foundation {
     var suit: Suit
     var pile: [Pile]
+    
+    public init(suit: Suit) {
+        self.suit = suit
+        self.pile = [Pile]()
+    }
+}
+
+// Mark: - Counts
+extension Foundation {
+    
 }

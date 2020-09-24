@@ -38,7 +38,7 @@ struct Game {
     // the stock.
     var foundations = [Suit: Foundation]()
 
-    init() {
+    public init() {
         print("Setting up the game")
         // Because we're in the default initializer,
         // we want a new deck of cards
@@ -49,13 +49,15 @@ struct Game {
         setSerialNumber()
         // And now let's set up the tableau
         setupTableau()
-
+        // And initialize our foundations
+        setupFoundations()
         // And now the remaining cards get sent to the stock
         self.stock.cards = self.deck!
         self.stock.printPile("stock")
     }
 }
 
+// MARK: - Setup
 extension Game {
     mutating func createNewDeck() {
         self.deck = createDeck()
@@ -95,5 +97,37 @@ extension Game {
 
     mutating func setupTableau() {
         self.tableau.newWith(&self.deck!)
+    }
+    
+    mutating func setupFoundations() {
+        // iterating over the enum is possible because it
+        // conforms to the CaseIterable protocol
+        for s in Suit.allCases {
+            let f = Foundation(suit: s)
+            self.foundations[s] = f
+        }
+    }
+}
+
+// MARK: - Counts
+extension Game {
+    func wasteCount() -> Int {
+        return self.waste.cards.count
+    }
+    
+    func stockCount() -> Int {
+        return self.stock.cards.count
+    }
+    
+    func totalTableauCount() -> Int {
+        return self.tableau.totalCardCount()
+    }
+}
+
+
+// MARK: - Logic
+extension Game {
+    func play() {
+        
     }
 }

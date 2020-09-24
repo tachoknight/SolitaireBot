@@ -61,7 +61,20 @@ struct Tableau {
     }
 }
 
-// Debugging/printing
+// Mark: - Counts
+extension Tableau {
+    func totalCardCount() -> Int {
+        var totalCards = 0;
+        
+        for col in 0...COLUMNS {
+            totalCards += self.columns[col]?.cards.count ?? 0
+        }
+        
+        return totalCards
+    }
+}
+
+// Mark: - Debugging/printing
 extension Tableau {
     // Print the entire tableau, as if it were laid out on a table;
     // allowing the user to choose to show all the cards or
