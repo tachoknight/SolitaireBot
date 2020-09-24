@@ -17,7 +17,7 @@ func printCurrentCardStatsFor(_ game: Game) {
 }
 
 
-let game = Game()
+var game = Game()
 printCurrentCardStatsFor(game)
 game.play()
 

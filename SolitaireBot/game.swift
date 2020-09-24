@@ -40,6 +40,8 @@ struct Game {
 
     // A record of the moves that were made during the game
     var moves =  [Move]()
+    // Our current move counter
+    var moveNum = 0
     
     public init() {
         print("Setting up the game")

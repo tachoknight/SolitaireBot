@@ -49,7 +49,7 @@ import Foundation
 
 extension Game {
     // Play a game of solitaire
-    func play() {
+    mutating func play() {
         var gameDone = false
         
         // Okay, here's our main loop. Once we break out
@@ -112,12 +112,49 @@ extension Game {
         // not a playable combination
         return false
     }
+    
+    // If this function is getting called, then we have the ability to move
+    // a card(s) from one column to another. "Card(s)" because the card we're
+    // moving may have cards below it
+    // This is an expensive function, because it has to find the card
+    // in the pile of cards in the From, and actually move it *and all
+    // subsequent cards* to the To pile
+    mutating func move(_ cardToMove: Card, fromColumn from: Int, toColumn to: Int) {
+        var cardsBeingMoved = [Card]()
+        var foundCard = false
+        var rowPosition = 0
+        for card in tableau.columns[from]!.cards {
+            // Loop through the pile looking for the card we're going to move...
+            if card == cardToMove {
+                // ... which we found ...
+                foundCard = true
+            }
+            
+            // ... and from here on out we're going to move every card
+            // from the pile in the from column to the pile in the to
+            // column
+            if foundCard {
+                // Remove the card from the From column
+                let cardToMove = tableau.columns[from]!.cards.remove(at: rowPosition)
+                // And add it to the To column
+                tableau.columns[to]!.cards.append(cardToMove)
+                // And also add it to our cardsBeingMoved array for documenting it
+                cardsBeingMoved.append(cardToMove)
+            }
+            
+            rowPosition += 1
+        }
+        
+        // We moved one or more cards, so let's add a Move record to indicate that
+        self.moveNum += 1
+        let move = Move(turn: moveNum, cards: cardsBeingMoved, from: "Col" + String(from), to: "Col" + String(to))
+        moves.append(move)
+    }
+    
     // This function is responsible for taking an array of cards
     // and the originating column and looking at the other columns'
     // bottom card and see if it's playable
-    func tryToPlay(_ cards: [Card], from: Int) -> Bool {
-        var wasAbleToPlay = false
-        
+    mutating func tryToPlay(_ cards: [Card], from: Int) -> Bool {
         // We want to move as many cards as possible in a turn, so
         // we start at the top of the array because if we can match
         // a card early, then all the other cards in the array will
@@ -134,21 +171,27 @@ extension Game {
                 // Now we need to get the bottom card of the
                 // pile for this column, which will be a face card
                 // and let's see if we can play on it
-                var bottomCard = tableau.columns[col]?.cards.last
+                let bottomCard = tableau.columns[col]?.cards.last
                 assert(bottomCard?.face == .up)
             
                 // And here we see if the card we got from the bottom
                 // of the pile can take the test card
-                var isPlayable = card(testCard, canBePlayedOn: bottomCard!)
+                let isPlayable = card(testCard, canBePlayedOn: bottomCard!)
+                if isPlayable {
+                    // Okay, great, the card is playable, in which case we want to
+                    // move it (and any cards under it) to the new column
+                    move(testCard, fromColumn: from, toColumn: col)
+                    return true
+                }
             }
         }
         
-        return wasAbleToPlay
+        return false
     }
     
     // This function controls all the logic around playing on
     // the tableau and does not work with any of the waste cards
-    func playTableau() {
+    mutating func playTableau() {
         // okay, let's go through each of the columns...
         for col in 0...COLUMNS {
             if isEmptyForColumn(col) {

@@ -7,24 +7,6 @@
 
 import Foundation
 
-// Crude but refactor as we get more into it
-enum BoardPart: Int {
-    case waste = 0
-    case stock = 1
-    
-    case tableau0 = 10
-    case tableau1 = 11
-    case tableau2 = 12
-    case tableau3 = 13
-    case tableau4 = 14
-    case tableau5 = 15
-    case tableau6 = 16
-    
-    case foundation_hearts = 20
-    case foundation_spades = 21
-    case foundation_diamonds = 22
-    case foundation_clubs = 23
-}
 
 // A move is a record of a card being played, the
 // card itself and where it came from and where it went
@@ -40,10 +22,10 @@ struct Move {
     let ts = Date()
     var turn = 0
     var cards: [Card]
-    var from: BoardPart
-    var to: BoardPart
+    var from = ""
+    var to = ""
     
-    public init(turn: Int, cards: [Card], from: BoardPart, to: BoardPart) {
+    public init(turn: Int, cards: [Card], from: String, to: String) {
         self.turn = turn
         self.cards = cards
         self.from = from
