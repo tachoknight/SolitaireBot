@@ -1,7 +1,7 @@
 
 import Foundation
 
-// Mark: - Face
+// MARK: - Face
 enum Face: Int {
     case up = 0
     case down = 1
@@ -30,14 +30,14 @@ enum Face: Int {
     }
 }
 
-// Mark: - Card Color
+// MARK: - Card Color
 enum CardColor: Int {
     case red = 0
     case black = 1
     case none = 2
 }
 
-// Mark: - Suit
+// MARK: - Suit
 enum Suit: Int, CaseIterable {
     case hearts = 100
     case spades = 200
@@ -91,7 +91,7 @@ enum Suit: Int, CaseIterable {
     }
 }
 
-// Mark: - Rank
+// MARK: - Rank
 enum Rank: Int {
     case null = 0
     case ace = 1
@@ -140,7 +140,7 @@ enum Rank: Int {
 }
 
 //
-// Mark: - Card
+// MARK: - Card
 // The card struct/class that is what we're playing
 // with
 //
@@ -195,7 +195,7 @@ func == (lhs: Card, rhs: Card) -> Bool {
     return lhs.hashValue == rhs.hashValue
 }
 
-// Mark: - Card functions
+// MARK: - Card functions
 
 //
 // Function for creating a deck of cards
@@ -215,7 +215,7 @@ func createDeck() -> [Card] {
     return deck
 }
 
-// Mark: - Extensions for card
+// MARK: - Extensions for card
 
 #if os(Linux)
     extension MutableCollection where Index == Int {

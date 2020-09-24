@@ -13,15 +13,17 @@ import Foundation
 
 struct Foundation {
     var suit: Suit
-    var pile: [Pile]
+    var pile: Pile
     
     public init(suit: Suit) {
         self.suit = suit
-        self.pile = [Pile]()
+        self.pile = Pile()
     }
 }
 
 // Mark: - Counts
 extension Foundation {
-    
+    func count() -> (Suit, Int) {
+        return (self.suit, self.pile.cards.count)
+    }
 }

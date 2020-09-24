@@ -13,7 +13,7 @@ import Foundation
 #endif
 
 func printCurrentCardStatsFor(_ game: Game) {
-    print("Currently have \(game.stockCount()) stock cards, \(game.totalTableauCount()) cards in tableau, and \(game.wasteCount()) in waste")
+    print("Currently have \(game.stockCount()) stock cards, \(game.totalTableauCount()) cards in tableau, \(game.totalFoundationCount()) in foundations, and \(game.wasteCount()) in waste")
 }
 
 

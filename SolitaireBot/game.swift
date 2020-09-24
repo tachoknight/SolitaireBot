@@ -122,6 +122,19 @@ extension Game {
     func totalTableauCount() -> Int {
         return self.tableau.totalCardCount()
     }
+    
+    func totalFoundationCount() -> Int {
+        var count = 0
+        for s in Suit.allCases {
+            count += foundationCountFor(s)
+        }
+        
+        return count
+    }
+    
+    func foundationCountFor(_ suit: Suit) -> Int {
+        return self.foundations[suit]?.count().1 ?? 0
+    }
 }
 
 
