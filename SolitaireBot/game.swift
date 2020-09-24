@@ -38,6 +38,9 @@ struct Game {
     // the stock.
     var foundations = [Suit: Foundation]()
 
+    // A record of the moves that were made during the game
+    var moves =  [Move]()
+    
     public init() {
         print("Setting up the game")
         // Because we're in the default initializer,
@@ -134,13 +137,5 @@ extension Game {
     
     func foundationCountFor(_ suit: Suit) -> Int {
         return self.foundations[suit]?.count().1 ?? 0
-    }
-}
-
-
-// MARK: - Logic
-extension Game {
-    func play() {
-        
     }
 }
