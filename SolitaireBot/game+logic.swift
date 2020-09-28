@@ -123,7 +123,7 @@ extension Game {
         var cardsBeingMoved = [Card]()
         var foundCard = false
         var rowPosition = 0
-        for card in tableau.columns[from]!.cards {
+        for card in tableau.columns[from].fu(because: "There should be a card in this column to move").cards {
             // Loop through the pile looking for the card we're going to move...
             if card == cardToMove {
                 // ... which we found ...
