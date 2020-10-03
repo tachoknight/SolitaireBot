@@ -48,20 +48,6 @@ import Foundation
 // MARK: - Logic
 
 extension Game {
-    // Play a game of solitaire
-    mutating func play() {
-        var gameDone = false
-        
-        // Okay, here's our main loop. Once we break out
-        // of this loop the game is done, regardless of whether
-        // we won or not
-        repeat {
-            // First thing we do is check for anything on the
-            // tableau that's playable
-            playTableau()
-        } while gameDone == false
-    }
-    
     // Check if the column is empty (so is eligible for a king to
     // be played on it)
     func isEmptyForColumn(_ col: Int) -> Bool {
