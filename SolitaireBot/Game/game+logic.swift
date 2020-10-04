@@ -140,7 +140,7 @@ extension Game {
     // This function is responsible for taking an array of cards
     // and the originating column and looking at the other columns'
     // bottom card and see if it's playable
-    mutating func tryToPlay(_ cards: [Card], from: Int) -> Bool {
+    mutating func tryToMoveAroundTableau(_ cards: [Card], from: Int) -> Bool {
         // We want to move as many cards as possible in a turn, so
         // we start at the top of the array because if we can match
         // a card early, then all the other cards in the array will
@@ -175,6 +175,35 @@ extension Game {
         return false
     }
     
+    func tryToMoveToFoundation(_ cards: inout [Card]) {
+        for testCard in cards {
+            // Get the pile of cards for this foundation
+            // Note the pile may be empty
+            var foundationPile = self.foundations[testCard.suit]?.pile
+            
+            // TODO: This can be replaced by simple calculation because
+            // the rank enum has 0 as below ace (1). Thus we don't need
+            // to be explicit, but can just test the calculation to see if
+            // it works, but at the moment the foundation piles don't have
+            // null cards (need to add that) and then it will work
+            
+            // If there are no cards in the pile, is the card we're testing
+            // an ace?
+            if foundationPile?.cards.count == 0 && testCard.rank != .ace {
+                // It is *not* an ace, so we can't do anything with this card
+                // so we just move on
+                continue
+            } else {
+                // Ah, the card *is* an ace, so we can play it
+                foundationPile?.cards.append(testCard)
+                // TODO: WAIT WAIT WAIT If we play this card, we need to know
+                // what column it came from because we need to tell that column
+                // it has a new card to flip over
+            }
+            
+        }
+    }
+    
     // This function controls all the logic around playing on
     // the tableau and does not work with any of the waste cards
     mutating func playTableau() {
@@ -187,8 +216,12 @@ extension Game {
             // There will *always* be >= 1 face-up cards in
             // each column's pile, or there will be no cards
             let pile = tableau.columns[col]
-            let fuCards = getFaceUpCards(pile!)
-            var wasAbleToPlay = tryToPlay(fuCards, from: col)
+            var fuCards = getFaceUpCards(pile.fu(because: "There should be cards in this pile"))
+            // Can any of these cards be moved to foundations?
+            tryToMoveToFoundation(&fuCards)
+            // Any remaining cards in the fuCards array we now try to move to
+            // other places on the tableau
+            var wasAbleToPlay = tryToMoveAroundTableau(fuCards, from: col)
         }
     }
 }
