@@ -137,6 +137,12 @@ enum Rank: Int {
             return String(rawValue)
         }
     }
+    
+    // This allows us to find the difference between two
+    // ranks of two different cards. 
+    static func -(_ x: Rank, _ y: Rank) -> Int {
+        return x.rawValue - y.rawValue
+    }
 }
 
 //

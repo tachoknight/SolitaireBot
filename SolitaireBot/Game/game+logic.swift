@@ -175,33 +175,92 @@ extension Game {
         return false
     }
     
-    func tryToMoveToFoundation(_ cards: inout [Card]) {
+    // This card takes an array of cards we want to prune, using the
+    // cardsToRemove array, returning a new array with only the cards
+    // in the from array that were not in the cardsToRemove array
+    func removeCards(from: [Card], cardsToRemove: [Card]) -> [Card] {
+        var prunedCards = [Card]()
+        
+        for testCard in from {
+            var foundCard = false
+            for removeCard in cardsToRemove {
+                if testCard == removeCard {
+                    foundCard = true
+                }
+            }
+            
+            if foundCard == false {
+                prunedCards.append(testCard)
+            }
+        }
+        
+        return prunedCards
+    }
+    
+    func tryToMoveToFoundation(_ cards: inout [Card], from: Int) -> Bool {
+        var successfullyMovedToFoundation = false
+        
+        var removedCards = [Card]()
+        
         for testCard in cards {
             // Get the pile of cards for this foundation
             // Note the pile may be empty
             var foundationPile = self.foundations[testCard.suit]?.pile
             
-            // TODO: This can be replaced by simple calculation because
-            // the rank enum has 0 as below ace (1). Thus we don't need
-            // to be explicit, but can just test the calculation to see if
-            // it works, but at the moment the foundation piles don't have
-            // null cards (need to add that) and then it will work
+            // First let's get the top-most card (i.e. last) from the
+            // foundation pile...
+            let topFoundationCard = foundationPile?.cards.last
             
-            // If there are no cards in the pile, is the card we're testing
-            // an ace?
-            if foundationPile?.cards.count == 0 && testCard.rank != .ace {
-                // It is *not* an ace, so we can't do anything with this card
-                // so we just move on
+            // ... and now we compare it to the test card. We have a
+            // static subtraction operator in the Rank enum so we
+            // can perform a simple subtraction. The only way our
+            // test card gets put onto the foundation pile is if
+            // it is one greater than the current top foundation card
+            // (e.g. 2 is greater than ace, but 7 is not one greater
+            // than 5, etc.)
+            if testCard.rank - topFoundationCard!.rank != 1 {
+                // We can't play this card on the foundation
                 continue
             } else {
-                // Ah, the card *is* an ace, so we can play it
+                // Oh, nice, we can put this card on the foundation
                 foundationPile?.cards.append(testCard)
-                // TODO: WAIT WAIT WAIT If we play this card, we need to know
-                // what column it came from because we need to tell that column
-                // it has a new card to flip over
+                // And add it to our array of cards to remove when
+                // we're done (we don't remove it here via enumeration
+                // because we don't want to have to deal with a reversed
+                // array and all the more complex logic that would entail)
+                removedCards.append(testCard)
+                // And tell the caller we were succesful
+                successfullyMovedToFoundation = true
             }
-            
         }
+        
+        // Now we want to remove the cards we were able to move to
+        // the foundation from the array that we were passed
+        cards = removeCards(from: cards, cardsToRemove: removedCards)
+        
+        return successfullyMovedToFoundation
+    }
+    
+    mutating func playColumn(_ col: Int) {
+        // There will *always* be >= 1 face-up cards in
+        // each column's pile, or there will be no cards
+        let pile = tableau.columns[col]
+        
+        // Now for each card in this column...
+        for (i, card) in pile.fu(because: "We should always have one or more cards here").cards.enumerated().reversed() {
+            // We only want to work with face up cards
+            if card.face == .up {
+                
+            }
+        }
+        
+        var fuCards = getFaceUpCards(pile.fu(because: "There should be cards in this pile"))
+        // Can any of these cards be moved to foundations?
+        let wasAbleToMoveToFoundation = tryToMoveToFoundation(&fuCards, from: col)
+        
+        // Any remaining cards in the fuCards array we now try to move to
+        // other places on the tableau
+        var wasAbleToPlay = tryToMoveAroundTableau(fuCards, from: col)
     }
     
     // This function controls all the logic around playing on
@@ -213,15 +272,9 @@ extension Game {
                 // Column is empty, so nothing to do
                 continue
             }
-            // There will *always* be >= 1 face-up cards in
-            // each column's pile, or there will be no cards
-            let pile = tableau.columns[col]
-            var fuCards = getFaceUpCards(pile.fu(because: "There should be cards in this pile"))
-            // Can any of these cards be moved to foundations?
-            tryToMoveToFoundation(&fuCards)
-            // Any remaining cards in the fuCards array we now try to move to
-            // other places on the tableau
-            var wasAbleToPlay = tryToMoveAroundTableau(fuCards, from: col)
+            
+            // Okay, what can we do with this column of cards?
+            playColumn(col)
         }
     }
 }

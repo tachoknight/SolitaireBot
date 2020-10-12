@@ -24,7 +24,7 @@ extension Game {
         repeat {
             // First thing we do is check for anything on the
             // tableau that's playable
-            playTableau()
+            playTableau()            
         } while gameDone == false
     }
 }

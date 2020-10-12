@@ -108,7 +108,16 @@ extension Game {
         // iterating over the enum is possible because it
         // conforms to the CaseIterable protocol
         for s in Suit.allCases {
-            let f = Foundation(suit: s)
+            var f = Foundation(suit: s)
+            // When we're creating a new foundation, we add as the bottom
+            // card the null card. The reason for this is for making comparisons
+            // of what is on the pile to a test card easier; a null card has a
+            // value of 0, while the ace has a value of 1. That means that we
+            // can always simply subtract the test card from the top card and
+            // if we get 1, we know that test card can be put on the pile without
+            // special "ace" logic that checks if the cards array is empty and
+            // the test card is an ace.
+            f.pile.cards.append(Card(rank: .null, suit: s, face: .noface))
             self.foundations[s] = f
         }
     }
