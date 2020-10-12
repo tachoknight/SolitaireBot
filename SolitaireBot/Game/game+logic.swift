@@ -132,7 +132,7 @@ extension Game {
         }
         
         // We moved one or more cards, so let's add a Move record to indicate that
-        self.moveNum += 1
+        moveNum += 1
         let move = Move(turn: moveNum, cards: cardsBeingMoved, from: "Col" + String(from), to: "Col" + String(to))
         moves.append(move)
     }
@@ -140,35 +140,29 @@ extension Game {
     // This function is responsible for taking an array of cards
     // and the originating column and looking at the other columns'
     // bottom card and see if it's playable
-    mutating func tryToMoveAroundTableau(_ cards: [Card], from: Int) -> Bool {
-        // We want to move as many cards as possible in a turn, so
-        // we start at the top of the array because if we can match
-        // a card early, then all the other cards in the array will
-        // come along for the ride, woo.
-        for testCard in cards {
-            // So now let's go through the columns other than the one
-            // we came from
-            for col in 0...COLUMNS {
-                if col == from {
-                    // skip the column we came from
-                    continue
-                }
+    mutating func tryToMoveAroundTableau(_ testCard: Card, from: Int) -> Bool {
+        // So now let's go through the columns other than the one
+        // we came from
+        for col in 0...COLUMNS {
+            if col == from {
+                // skip the column we came from
+                continue
+            }
             
-                // Now we need to get the bottom card of the
-                // pile for this column, which will be a face card
-                // and let's see if we can play on it
-                let bottomCard = tableau.columns[col]?.cards.last
-                assert(bottomCard?.face == .up)
+            // Now we need to get the bottom card of the
+            // pile for this column, which will be a face card
+            // and let's see if we can play on it
+            let bottomCard = tableau.columns[col]?.cards.last
+            assert(bottomCard?.face == .up)
             
-                // And here we see if the card we got from the bottom
-                // of the pile can take the test card
-                let isPlayable = card(testCard, canBePlayedOn: bottomCard!)
-                if isPlayable {
-                    // Okay, great, the card is playable, in which case we want to
-                    // move it (and any cards under it) to the new column
-                    move(testCard, fromColumn: from, toColumn: col)
-                    return true
-                }
+            // And here we see if the card we got from the bottom
+            // of the pile can take the test card
+            let isPlayable = card(testCard, canBePlayedOn: bottomCard!)
+            if isPlayable {
+                // Okay, great, the card is playable, in which case we want to
+                // move it (and any cards under it) to the new column
+                move(testCard, fromColumn: from, toColumn: col)
+                return true
             }
         }
         
@@ -197,46 +191,32 @@ extension Game {
         return prunedCards
     }
     
-    func tryToMoveToFoundation(_ cards: inout [Card], from: Int) -> Bool {
+    func tryToMoveToFoundation(_ card: Card, from: Int) -> Bool {
         var successfullyMovedToFoundation = false
         
-        var removedCards = [Card]()
-        
-        for testCard in cards {
-            // Get the pile of cards for this foundation
-            // Note the pile may be empty
-            var foundationPile = self.foundations[testCard.suit]?.pile
+        // Get the pile of cards for this foundation
+        // Note the pile may be empty
+        var foundationPile = foundations[card.suit]?.pile
             
-            // First let's get the top-most card (i.e. last) from the
-            // foundation pile...
-            let topFoundationCard = foundationPile?.cards.last
+        // First let's get the top-most card (i.e. last) from the
+        // foundation pile...
+        let topFoundationCard = foundationPile?.cards.last
             
-            // ... and now we compare it to the test card. We have a
-            // static subtraction operator in the Rank enum so we
-            // can perform a simple subtraction. The only way our
-            // test card gets put onto the foundation pile is if
-            // it is one greater than the current top foundation card
-            // (e.g. 2 is greater than ace, but 7 is not one greater
-            // than 5, etc.)
-            if testCard.rank - topFoundationCard!.rank != 1 {
-                // We can't play this card on the foundation
-                continue
-            } else {
-                // Oh, nice, we can put this card on the foundation
-                foundationPile?.cards.append(testCard)
-                // And add it to our array of cards to remove when
-                // we're done (we don't remove it here via enumeration
-                // because we don't want to have to deal with a reversed
-                // array and all the more complex logic that would entail)
-                removedCards.append(testCard)
-                // And tell the caller we were succesful
-                successfullyMovedToFoundation = true
-            }
+        // ... and now we compare it to the test card. We have a
+        // static subtraction operator in the Rank enum so we
+        // can perform a simple subtraction. The only way our
+        // test card gets put onto the foundation pile is if
+        // it is one greater than the current top foundation card
+        // (e.g. 2 is greater than ace, but 7 is not one greater
+        // than 5, etc.)
+        if card.rank - topFoundationCard!.rank != 1 {
+            return false
+        } else {
+            // Oh, nice, we can put this card on the foundation
+            foundationPile?.cards.append(card)
+            // And tell the caller we were succesful
+            successfullyMovedToFoundation = true
         }
-        
-        // Now we want to remove the cards we were able to move to
-        // the foundation from the array that we were passed
-        cards = removeCards(from: cards, cardsToRemove: removedCards)
         
         return successfullyMovedToFoundation
     }
@@ -244,23 +224,42 @@ extension Game {
     mutating func playColumn(_ col: Int) {
         // There will *always* be >= 1 face-up cards in
         // each column's pile, or there will be no cards
-        let pile = tableau.columns[col]
+        var pile = tableau.columns[col]
         
         // Now for each card in this column...
         for (i, card) in pile.fu(because: "We should always have one or more cards here").cards.enumerated().reversed() {
-            // We only want to work with face up cards
-            if card.face == .up {
-                
+            var testCard = card
+            // We are working with the cards in reverse order, from the bottom to the top
+            // That means in a previous iteration we may have moved a card
+            // away from the pile, in which case if we run across a card that
+            // is face down, we want to flip it to be face up so it can be played
+            if testCard == pile!.cards.last && testCard.face == .down {
+                testCard.face = .up
+            }
+            
+            if testCard.face == .up {
+                // First let's see if we can move the card to the foundation. Remember
+                // the array is reversed, so it's like in the game we're working with the
+                // bottom-most card, which is always face-up, even if it's the only card
+                // in the column
+                let wasAbleToMoveToFoundation = tryToMoveToFoundation(testCard, from: col)
+                // were we able to move this card to the foundation?
+                if wasAbleToMoveToFoundation {
+                    // yes we were! So let's remove this card from the array of cards
+                    pile?.cards.remove(at: i)
+                } else {
+                    // Okay, we weren't able to move it to the foundation, so let's
+                    // see if we can move it to another column
+                    let wasAbleToPlay = tryToMoveAroundTableau(testCard, from: col)
+                    if wasAbleToPlay {
+                        // yes we were! So let's remove this card from the array of cards
+                        pile?.cards.remove(at: i)
+                    }
+                }
             }
         }
         
-        var fuCards = getFaceUpCards(pile.fu(because: "There should be cards in this pile"))
-        // Can any of these cards be moved to foundations?
-        let wasAbleToMoveToFoundation = tryToMoveToFoundation(&fuCards, from: col)
-        
-        // Any remaining cards in the fuCards array we now try to move to
-        // other places on the tableau
-        var wasAbleToPlay = tryToMoveAroundTableau(fuCards, from: col)
+        pile?.printPile("col \(col)")
     }
     
     // This function controls all the logic around playing on
@@ -275,6 +274,9 @@ extension Game {
             
             // Okay, what can we do with this column of cards?
             playColumn(col)
+            
+            printCurrentCardStatsFor(self)
+            self.tableau.printTableau(showAllCards: true)
         }
     }
 }
