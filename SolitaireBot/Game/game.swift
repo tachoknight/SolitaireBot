@@ -39,10 +39,10 @@ struct Game {
     var foundations = [Suit: Foundation]()
 
     // A record of the moves that were made during the game
-    var moves =  [Move]()
+    var moves = [Move]()
     // Our current move counter
     var moveNum = 0
-    
+
     public init() {
         print("Setting up the game")
         // Because we're in the default initializer,
@@ -50,6 +50,22 @@ struct Game {
         createNewDeck()
         // And shuffle it
         shuffleNewDeck()
+        // And set up everything else
+        self.setup()
+    }
+
+    public init(_ deckFileContents: String) {
+        print("Going to use to use a custom deck")
+        createDeckFromFile(deckFileContents)
+        // No shuffling necessary, so just do the rest of the setup
+        self.setup()
+    }
+}
+
+// MARK: - Setup
+
+extension Game {
+    private mutating func setup() {
         // And get the game's serial number
         setSerialNumber()
         // And now let's set up the tableau
@@ -58,17 +74,18 @@ struct Game {
         setupFoundations()
         // And now the remaining cards get sent to the stock
         self.stock.cards = self.deck!
-        self.stock.printPile("stock")
+        // self.stock.printPile("stock")
     }
-}
-
-// MARK: - Setup
-extension Game {
-    mutating func createNewDeck() {
+    
+    private mutating func createNewDeck() {
         self.deck = createDeck()
     }
 
-    mutating func shuffleNewDeck() {
+    private mutating func createDeckFromFile(_ file: String) {
+        self.deck = createDeck(fileContents: file)
+    }
+
+    private mutating func shuffleNewDeck() {
         // From the MutableCollectionType extension
         #if DEBUG
             print("Now shuffling the deck...")
@@ -89,7 +106,7 @@ extension Game {
         #endif
     }
 
-    mutating func setSerialNumber() {
+    private mutating func setSerialNumber() {
         var deckLayout = ""
         if let cardDeck = self.deck {
             for card in cardDeck {
@@ -100,11 +117,11 @@ extension Game {
         print("Hash value is \(deckLayout.hash)")
     }
 
-    mutating func setupTableau() {
+    private mutating func setupTableau() {
         self.tableau.newWith(&self.deck!)
     }
-    
-    mutating func setupFoundations() {
+
+    private mutating func setupFoundations() {
         // iterating over the enum is possible because it
         // conforms to the CaseIterable protocol
         for s in Suit.allCases {
@@ -124,29 +141,36 @@ extension Game {
 }
 
 // MARK: - Counts
+
 extension Game {
     func wasteCount() -> Int {
         return self.waste.cards.count
     }
-    
+
     func stockCount() -> Int {
         return self.stock.cards.count
     }
-    
+
     func totalTableauCount() -> Int {
         return self.tableau.totalCardCount()
     }
-    
+
     func totalFoundationCount() -> Int {
         var count = 0
         for s in Suit.allCases {
-            count += foundationCountFor(s)
+            count += self.foundationCountFor(s)
         }
-        
+
         return count
     }
-    
+
     func foundationCountFor(_ suit: Suit) -> Int {
-        return self.foundations[suit]?.count().1 ?? 0
+        // We want to ignore the null cards that are always
+        // present, so the count is always "count - 1"
+        let count = self.foundations[suit]?.count().1 ?? 0
+        if count == 0 {
+            return 0
+        }
+        return count - 1
     }
 }

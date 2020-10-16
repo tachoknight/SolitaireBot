@@ -94,6 +94,7 @@ extension Game {
             return true
         }
         
+        
         // Nope, the cards are too far apart from each other so this is
         // not a playable combination
         return false
@@ -140,7 +141,7 @@ extension Game {
     // This function is responsible for taking an array of cards
     // and the originating column and looking at the other columns'
     // bottom card and see if it's playable
-    mutating func tryToMoveAroundTableau(_ testCard: Card, from: Int) -> Bool {
+    mutating func tryToMoveAroundTableau(_ testCard: Card, from: Int) -> (Bool, Int) {
         // So now let's go through the columns other than the one
         // we came from
         for col in 0...COLUMNS {
@@ -162,11 +163,11 @@ extension Game {
                 // Okay, great, the card is playable, in which case we want to
                 // move it (and any cards under it) to the new column
                 move(testCard, fromColumn: from, toColumn: col)
-                return true
+                return (true, col)
             }
         }
         
-        return false
+        return (false, -1)
     }
     
     // This card takes an array of cards we want to prune, using the
@@ -222,44 +223,121 @@ extension Game {
     }
     
     mutating func playColumn(_ col: Int) {
-        // There will *always* be >= 1 face-up cards in
-        // each column's pile, or there will be no cards
-        var pile = tableau.columns[col]
+        // This bool tells us whether we should keep playing the cards
+        // in the column. Even though we're going through each card in
+        // succession, we may end up moving cards around that would impact
+        // further play (e.g. we moved more than one card at a time).
+        // Only when a card is face up and we couldn't play it do we
+        // consider that we're done
+        var keepPlaying = false
         
-        // Now for each card in this column...
-        for (i, card) in pile.fu(because: "We should always have one or more cards here").cards.enumerated().reversed() {
-            var testCard = card
-            // We are working with the cards in reverse order, from the bottom to the top
-            // That means in a previous iteration we may have moved a card
-            // away from the pile, in which case if we run across a card that
-            // is face down, we want to flip it to be face up so it can be played
-            if testCard == pile!.cards.last && testCard.face == .down {
-                testCard.face = .up
-            }
+        repeat {
+            // Always reset the keepPlaying flag; if we can, in fact,
+            // keep playing, we'll set this to true somewhere below
+            keepPlaying = false
             
-            if testCard.face == .up {
-                // First let's see if we can move the card to the foundation. Remember
-                // the array is reversed, so it's like in the game we're working with the
-                // bottom-most card, which is always face-up, even if it's the only card
-                // in the column
-                let wasAbleToMoveToFoundation = tryToMoveToFoundation(testCard, from: col)
-                // were we able to move this card to the foundation?
-                if wasAbleToMoveToFoundation {
-                    // yes we were! So let's remove this card from the array of cards
-                    pile?.cards.remove(at: i)
-                } else {
-                    // Okay, we weren't able to move it to the foundation, so let's
-                    // see if we can move it to another column
-                    let wasAbleToPlay = tryToMoveAroundTableau(testCard, from: col)
-                    if wasAbleToPlay {
+            // There will *always* be >= 1 face-up cards in
+            // each column's pile, or there will be no cards
+            var pile = tableau.columns[col]
+        
+            // We are playing the cards in reverse order and
+            // if we can play a card, great. If we can't we go on up
+            // the array of face-up cards, trying to play. Cards that
+            // we were not able to play on previous rounds we add to a
+            // separate array so that, if we are able to move a later
+            // card, then all the cards "below" it (i.e. in that array)
+            // will move too
+        
+            // This is the array of cards that are face up but we couldn't play
+            // in case a later card can, in which case they'll be moved as well
+            var prevCards = [Card]()
+                    
+            // Now for each card in this column...
+            for (i, card) in pile.fu(because: "We should always have one or more cards here").cards.enumerated().reversed() {
+                var testCard = card
+                // We are working with the cards in reverse order, from the bottom to the top
+                // That means in a previous iteration we may have moved a card
+                // away from the pile, in which case if we run across a card that
+                // is face down, we want to flip it to be face up so it can be played
+                if testCard == pile!.cards.last, testCard.face == .down {
+                    // Flip the card up to play
+                    testCard.face = .up
+                    // And update the array with the fact that we flipped
+                    // the card up
+                    pile?.cards[i].face = .up
+                    
+                    // And proactively set the keepPlaying flag to false; if we
+                    // are able to play it then this will be reset to true, otherwise
+                    // we'll be done
+                    keepPlaying = false
+                }
+            
+                if testCard.face == .up {
+                    // First let's see if we can move the card to the foundation. Remember
+                    // the array is reversed, so it's like in the game we're working with the
+                    // bottom-most card, which is always face-up, even if it's the only card
+                    // in the column
+                    var wasAbleToMove = tryToMoveToFoundation(testCard, from: col)
+                    // were we able to move this card to the foundation?
+                    if wasAbleToMove {
                         // yes we were! So let's remove this card from the array of cards
                         pile?.cards.remove(at: i)
+                    } else {
+                        // Okay, we weren't able to move it to the foundation, so let's
+                        // see if we can move it to another column
+                        var colMovedTo = -1
+                        (wasAbleToMove, colMovedTo) = tryToMoveAroundTableau(testCard, from: col)
+                        if wasAbleToMove {
+                            // yes we were! So let's remove this card from the array of cards
+                            pile?.cards.remove(at: i)
+                        
+                            // Now we check if there are any cards in the prevCards array,
+                            // in which case they get to move as well
+                            if prevCards.count > 0 {
+                                // And try to move the other cards as well
+                                for prevCard in prevCards {
+                                    // Here we are simply moving the cards from one column to another
+                                    move(prevCard, fromColumn: col, toColumn: colMovedTo)
+                                }
+                                
+                                // HEY! These two lines are commented out because we are
+                                // moving the card in the loop above. This stuff may not
+                                // be necessary
+                                
+                                // let newCards = removeCards(from: pile.fu(because: "There should be cards left in the array").cards, cardsToRemove: prevCards)
+                                
+                                // And set the new column of cards
+                                // tableau.columns[col]?.cards = newCards
+                                
+                                // And break out of the card loop because we need to restart with the
+                                // remaining cards
+                                break
+                            }
+                        } else {
+                            // This card is face up but we were not able to move it
+                            // anywhere. We add it to the prevCards array in the event
+                            // that a subsequent card does move, in which case this one
+                            // and any other cards in the array will move along too
+                            prevCards.append(testCard)
+                        }
+                    }
+                    
+                    // If we were able to play, we should try to play again
+                    if wasAbleToMove && pile!.cards.count > 0 {
+                        keepPlaying = true
+                    } else {
+                        keepPlaying = false
+                        // And get us out of the loop
+                        break
                     }
                 }
+                
+                print("Here's how it looks now in col \(col)")
+                tableau.printTableau(showAllCards: true)
             }
-        }
         
-        pile?.printPile("col \(col)")
+            pile?.printPile("col \(col)")
+        } while keepPlaying == true
     }
     
     // This function controls all the logic around playing on
@@ -276,7 +354,7 @@ extension Game {
             playColumn(col)
             
             printCurrentCardStatsFor(self)
-            self.tableau.printTableau(showAllCards: true)
+            tableau.printTableau(showAllCards: true)
         }
     }
 }

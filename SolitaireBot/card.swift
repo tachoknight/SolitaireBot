@@ -2,6 +2,7 @@
 import Foundation
 
 // MARK: - Face
+
 enum Face: Int {
     case up = 0
     case down = 1
@@ -31,6 +32,7 @@ enum Face: Int {
 }
 
 // MARK: - Card Color
+
 enum CardColor: Int {
     case red = 0
     case black = 1
@@ -38,6 +40,7 @@ enum CardColor: Int {
 }
 
 // MARK: - Suit
+
 enum Suit: Int, CaseIterable {
     case hearts = 100
     case spades = 200
@@ -91,8 +94,24 @@ enum Suit: Int, CaseIterable {
     }
 }
 
+func convertSymbolToSuit(_ symbol: String) -> Suit {
+    switch symbol {
+    case "♠":
+        return .spades
+    case "♣":
+        return .clubs
+    case "♦":
+        return .diamonds
+    case "♥":
+        return .hearts
+    default:
+        return .noSuit
+    }
+}
+
 // MARK: - Rank
-enum Rank: Int {    
+
+enum Rank: Int {
     case null = 0
     case ace = 1
     case two
@@ -137,16 +156,51 @@ enum Rank: Int {
             return String(rawValue)
         }
     }
-    
+
     // This allows us to find the difference between two
-    // ranks of two different cards. 
-    static func -(_ x: Rank, _ y: Rank) -> Int {
+    // ranks of two different cards.
+    static func - (_ x: Rank, _ y: Rank) -> Int {
         return x.rawValue - y.rawValue
     }
 }
 
+func convertSymbolToRank(_ symbol: String) -> Rank {
+    switch symbol {
+    case "A":
+        return .ace
+    case "2":
+        return .two
+    case "3":
+        return .three
+    case "4":
+        return .four
+    case "5":
+        return .five
+    case "6":
+        return .six
+    case "7":
+        return .seven
+    case "8":
+        return .eight
+    case "9":
+        return .nine
+    case "10":
+        return .ten
+    case "J":
+        return .jack
+    case "Q":
+        return .queen
+    case "K":
+        return .king
+    default:
+        return .null
+    }
+}
+
 //
+
 // MARK: - Card
+
 // The card struct/class that is what we're playing
 // with
 //
@@ -154,6 +208,23 @@ struct Card: Hashable, CustomStringConvertible {
     var rank: Rank
     var suit: Suit
     var face: Face
+
+    init(rank: Rank, suit: Suit, face: Face) {
+        self.rank = rank
+        self.suit = suit
+        self.face = face
+    }
+
+    // We are given a string like 10♠ and we want
+    // to translate that into a valid card value
+    init(desc: String) {
+        let suitSymbol = String(desc.last!)
+        let rankSymbol = String(desc.prefix(desc.count - 1))
+
+        self.face = .down
+        self.suit = convertSymbolToSuit(suitSymbol)
+        self.rank = convertSymbolToRank(rankSymbol)
+    }
 
     // For storing in dictionaries
     func hash(into hasher: inout Hasher) {
@@ -218,6 +289,20 @@ func createDeck() -> [Card] {
         }
         n += 1
     }
+    return deck
+}
+
+// We load a file that contains the cards in the order
+// we need. It would be pointless to shuffle the results
+// of this function as presumably they're in order for a
+// reason :)
+func createDeck(fileContents: String) -> [Card] {
+    var deck = [Card]()
+    let cardArray = fileContents.components(separatedBy: "\n")
+    for cardString in cardArray {
+        deck.append(Card(desc: cardString))
+    }
+
     return deck
 }
 
