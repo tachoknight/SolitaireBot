@@ -1,6 +1,8 @@
 
 import Foundation
 
+let NUM_OF_CARDS_IN_DECK = 52
+
 // MARK: - Face
 
 enum Face: Int {

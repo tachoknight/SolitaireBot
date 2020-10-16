@@ -107,6 +107,12 @@ extension Game {
     // in the pile of cards in the From, and actually move it *and all
     // subsequent cards* to the To pile
     mutating func move(_ cardToMove: Card, fromColumn from: Int, toColumn to: Int) {
+        /*
+        if cardToMove.rank == .jack && cardToMove.suit == .clubs {
+            print("This is the card to check")
+        }
+        */
+        
         var cardsBeingMoved = [Card]()
         var foundCard = false
         var rowPosition = 0
@@ -117,12 +123,13 @@ extension Game {
                 foundCard = true
             }
             
-            // ... and from here on out we're going to move every card
-            // from the pile in the from column to the pile in the to
-            // column
+            // If we found the card, then we are going to move the card
+            // to the new location and remove it from the old location
             if foundCard {
                 // Remove the card from the From column
-                let cardToMove = tableau.columns[from]!.cards.remove(at: rowPosition)
+                var cardToMove = tableau.columns[from]!.cards.remove(at: rowPosition)
+                // And make sure it's face up
+                cardToMove.face = .up
                 // And add it to the To column
                 tableau.columns[to]!.cards.append(cardToMove)
                 // And also add it to our cardsBeingMoved array for documenting it
@@ -147,6 +154,25 @@ extension Game {
         for col in 0...COLUMNS {
             if col == from {
                 // skip the column we came from
+                continue
+            }
+            
+            // There may be no cards in this column, in which case we won't
+            // do anything with it unless we're playing a King, which can
+            // *only* go on a free column (i.e. a column with no cards)
+
+            // Is this a King card?
+            if testCard.rank == .king && isEmptyForColumn(col) == true {
+                // We can play a king on this column!
+                move(testCard, fromColumn: from, toColumn: col)
+                return (true, col)
+            }
+            
+            // We do not have a King card, but we still need to
+            // validate that there are cards in this column to
+            // test, otherwise we're going to skip this column
+            // entirely
+            if isEmptyForColumn(col) {
                 continue
             }
             
@@ -355,6 +381,9 @@ extension Game {
             
             printCurrentCardStatsFor(self)
             tableau.printTableau(showAllCards: true)
+            for (_, v) in self.foundations {
+                v.printTopCard()
+            }
         }
     }
 }

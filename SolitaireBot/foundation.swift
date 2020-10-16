@@ -21,9 +21,17 @@ struct Foundation {
     }
 }
 
-// Mark: - Counts
+// MARK: - Counts
 extension Foundation {
     func count() -> (Suit, Int) {
         return (self.suit, self.pile.cards.count)
+    }
+}
+
+// MARK: - Printing
+extension Foundation {
+    func printTopCard() {
+        let cardToShow = pile.cards.last
+        print("Foundation: \(suit.symbol())\(cardToShow.fu(because: "There should always be a card in the foundation, even a null card").description)")
     }
 }

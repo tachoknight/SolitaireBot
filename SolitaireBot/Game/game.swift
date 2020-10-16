@@ -79,10 +79,12 @@ extension Game {
     
     private mutating func createNewDeck() {
         self.deck = createDeck()
+        assert(self.deck?.count == NUM_OF_CARDS_IN_DECK)
     }
 
     private mutating func createDeckFromFile(_ file: String) {
         self.deck = createDeck(fileContents: file)
+        assert(self.deck?.count == NUM_OF_CARDS_IN_DECK)
     }
 
     private mutating func shuffleNewDeck() {
@@ -125,6 +127,11 @@ extension Game {
         // iterating over the enum is possible because it
         // conforms to the CaseIterable protocol
         for s in Suit.allCases {
+            // Don't bother creating a null foundation
+            if s == .noSuit {
+                continue
+            }
+            
             var f = Foundation(suit: s)
             // When we're creating a new foundation, we add as the bottom
             // card the null card. The reason for this is for making comparisons
