@@ -94,7 +94,6 @@ extension Game {
             return true
         }
         
-        
         // Nope, the cards are too far apart from each other so this is
         // not a playable combination
         return false
@@ -108,10 +107,10 @@ extension Game {
     // subsequent cards* to the To pile
     mutating func move(_ cardToMove: Card, fromColumn from: Int, toColumn to: Int) {
         /*
-        if cardToMove.rank == .jack && cardToMove.suit == .clubs {
-            print("This is the card to check")
-        }
-        */
+         if cardToMove.rank == .jack && cardToMove.suit == .clubs {
+             print("This is the card to check")
+         }
+         */
         
         var cardsBeingMoved = [Card]()
         var foundCard = false
@@ -162,7 +161,7 @@ extension Game {
             // *only* go on a free column (i.e. a column with no cards)
 
             // Is this a King card?
-            if testCard.rank == .king && isEmptyForColumn(col) == true {
+            if testCard.rank == .king, isEmptyForColumn(col) == true {
                 // We can play a king on this column!
                 move(testCard, fromColumn: from, toColumn: col)
                 return (true, col)
@@ -218,7 +217,7 @@ extension Game {
         return prunedCards
     }
     
-    func tryToMoveToFoundation(_ card: Card, from: Int) -> Bool {
+    mutating func tryToMoveToFoundation(_ card: Card, from: Int) -> Bool {
         var successfullyMovedToFoundation = false
         
         // Get the pile of cards for this foundation
@@ -244,6 +243,9 @@ extension Game {
             // And tell the caller we were succesful
             successfullyMovedToFoundation = true
         }
+        
+        // And assign it back
+        self.foundations[card.suit]?.pile = foundationPile.fu(because: "We should have a card in the pile here because otherwise we would have already returned from the function")
         
         return successfullyMovedToFoundation
     }
@@ -349,7 +351,7 @@ extension Game {
                     }
                     
                     // If we were able to play, we should try to play again
-                    if wasAbleToMove && pile!.cards.count > 0 {
+                    if wasAbleToMove, pile!.cards.count > 0 {
                         keepPlaying = true
                     } else {
                         keepPlaying = false
@@ -363,6 +365,9 @@ extension Game {
             }
         
             pile?.printPile("col \(col)")
+            
+            // And assign the current state of the pile to the column
+            tableau.columns[col] = pile
         } while keepPlaying == true
     }
     
@@ -379,11 +384,14 @@ extension Game {
             // Okay, what can we do with this column of cards?
             playColumn(col)
             
+            // MARK: Debugging
             printCurrentCardStatsFor(self)
-            tableau.printTableau(showAllCards: true)
-            for (_, v) in self.foundations {
+            tableau.printTableau(showAllCards: false)
+            for (_, v) in foundations {
                 v.printTopCard()
             }
         }
+        
+        print("Done playing the tableau")
     }
 }

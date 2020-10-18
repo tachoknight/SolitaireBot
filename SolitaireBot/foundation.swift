@@ -32,6 +32,6 @@ extension Foundation {
 extension Foundation {
     func printTopCard() {
         let cardToShow = pile.cards.last
-        print("Foundation: \(suit.symbol())\(cardToShow.fu(because: "There should always be a card in the foundation, even a null card").description)")
+        print("Foundation: \(cardToShow.fu(because: "There should always be a card in the foundation, even a null card").description)")
     }
 }
