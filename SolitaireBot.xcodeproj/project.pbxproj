@@ -18,6 +18,8 @@
 		0FC51310251D39180087D807 /* game+tableau_logic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FC5130F251D39180087D807 /* game+tableau_logic.swift */; };
 		0FC51313251D418E0087D807 /* move.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FC51312251D418E0087D807 /* move.swift */; };
 		0FE9F374253CD26900739708 /* game+stock_logic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FE9F373253CD26900739708 /* game+stock_logic.swift */; };
+		0FEB5D332542276B00A00CF1 /* game+waste_logic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FEB5D322542276B00A00CF1 /* game+waste_logic.swift */; };
+		0FEB5D36254228C200A00CF1 /* game+foundation_logic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FEB5D35254228C200A00CF1 /* game+foundation_logic.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -46,6 +48,8 @@
 		0FC5130F251D39180087D807 /* game+tableau_logic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "game+tableau_logic.swift"; sourceTree = "<group>"; };
 		0FC51312251D418E0087D807 /* move.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = move.swift; sourceTree = "<group>"; };
 		0FE9F373253CD26900739708 /* game+stock_logic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "game+stock_logic.swift"; sourceTree = "<group>"; };
+		0FEB5D322542276B00A00CF1 /* game+waste_logic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "game+waste_logic.swift"; sourceTree = "<group>"; };
+		0FEB5D35254228C200A00CF1 /* game+foundation_logic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "game+foundation_logic.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +102,8 @@
 				0FC5130F251D39180087D807 /* game+tableau_logic.swift */,
 				0FE9F373253CD26900739708 /* game+stock_logic.swift */,
 				0FA778602528B4C5000CDD34 /* game+play.swift */,
+				0FEB5D322542276B00A00CF1 /* game+waste_logic.swift */,
+				0FEB5D35254228C200A00CF1 /* game+foundation_logic.swift */,
 			);
 			path = Game;
 			sourceTree = "<group>";
@@ -164,12 +170,14 @@
 				0F93068E2514172A00700B5C /* tableau.swift in Sources */,
 				0F930687251410DA00700B5C /* foundation.swift in Sources */,
 				0FC51313251D418E0087D807 /* move.swift in Sources */,
+				0FEB5D36254228C200A00CF1 /* game+foundation_logic.swift in Sources */,
 				0FA778612528B4C5000CDD34 /* game+play.swift in Sources */,
 				0F8E6F7E252171C100FCE251 /* optional+forceunwrapped.swift in Sources */,
 				0F93068025140A9000700B5C /* card.swift in Sources */,
 				0FE9F374253CD26900739708 /* game+stock_logic.swift in Sources */,
 				0F93068B2514118700700B5C /* pile.swift in Sources */,
 				0FC51310251D39180087D807 /* game+tableau_logic.swift in Sources */,
+				0FEB5D332542276B00A00CF1 /* game+waste_logic.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
