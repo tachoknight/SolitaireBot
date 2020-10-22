@@ -24,6 +24,7 @@ func maybeUseDeckFile() -> (Bool, String) {
     return (true, deckFile)
 }
 
+// Our actual game that we're going to use
 var game: Game
 
 let deckCheck = maybeUseDeckFile()
