@@ -27,6 +27,9 @@ struct Game {
 
     // The stock pile is where the cards are dealt from
     var stock = Pile()
+    // And this is the card array from the stock that
+    // we play from
+    var stockCardsInPlay = [Card]()
 
     // The tableau is where the game is played, essentially; it
     // is here that cards are moved around, from column to column,

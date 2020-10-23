@@ -106,12 +106,6 @@ extension Game {
     // in the pile of cards in the From, and actually move it *and all
     // subsequent cards* to the To pile
     mutating func move(_ cardToMove: Card, fromColumn from: Int, toColumn to: Int) {
-        /*
-         if cardToMove.rank == .jack && cardToMove.suit == .clubs {
-             print("This is the card to check")
-         }
-         */
-        
         var cardsBeingMoved = [Card]()
         var foundCard = false
         var rowPosition = 0
@@ -352,6 +346,7 @@ extension Game {
             playColumn(col)
             
             // MARK: Debugging
+
             printCurrentCardStatsFor(self)
             tableau.printTableau(showAllCards: false)
             for (_, v) in foundations {

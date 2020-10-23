@@ -31,4 +31,13 @@ struct Move {
         self.from = from
         self.to = to
     }
+    
+    // Similar but only one card
+    public init(turn: Int, card: Card, from: String, to: String) {
+        self.turn = turn
+        self.cards = [Card]()
+        self.cards.append(card)
+        self.from = from
+        self.to = to
+    }
 }
