@@ -14,30 +14,29 @@ let NUMBER_OF_STOCK_CARDS = 3
 extension Game {
     // This function removes the cards from the stock
     mutating func drawCardsFromStock(amount: Int) -> [Card] {
-        // Make sure we can deal out the right number
-        // of cards asked for
-        assert(amount <= self.stock.cards.count)
-        
-        var cards = [Card]()
-        var i = 1
-        for (_, card) in self.stock.cards.enumerated().reversed() {
-            // Add the card to our array...
-            cards.append(card)
-            // ... and *remove* it from the stock; if the card comes
-            // back to the stock it's because it couldn't be played (yet)
-            // on the tableau or foundation
-            self.stock.cards.removeLast()
-            
-            // Do we have the amount of cards we need?
-            if i == amount {
-                // Yep, so we're done
-                break
-            } else {
-                // Nope, keep going
-                i += 1
-            }
+        // If we don't have any cards in the stock, then we
+        // need to get the waste pile cards over here.
+        if self.stock.cards.count == 0 {
+            moveWasteToStock()
         }
         
+        // Make sure we can deal out the right number
+        // of cards asked for, and if there are fewer cards
+        // in the pile than we want, then we take whatever we
+        // can get
+        var trueAmount = amount
+        if trueAmount > self.stock.cards.count {
+            trueAmount = self.stock.cards.count
+        }
+        
+        // Now let's get the cards
+        var cards = [Card]()
+        for _ in trueAmount {
+            var fuCard = self.stock.cards.removeFirst()
+            fuCard.face = .up
+            cards.append(fuCard)
+        }
+     
         // Okay, we're returning the cards, but not in playable
         // order. That will be done by the caller
         return cards
@@ -79,6 +78,12 @@ extension Game {
                 // Yes, we can add it!
                 self.add(testCard, toColumn: col)
                 return true
+            }
+            
+            // The column may be empty, and we don't have a king, in
+            // which case we cannot play here
+            if isEmptyForColumn(col) == true {
+                return false
             }
             
             // Now we need to get the bottom card of the

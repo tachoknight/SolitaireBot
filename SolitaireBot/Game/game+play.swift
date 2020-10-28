@@ -24,7 +24,7 @@ extension Game {
         repeat {
             // First thing we do is check for anything on the
             // tableau that's playable
-            //playTableau()
+            playTableau()
             // Okay, we can't do anything more with the tableau,
             // so let's move on to the stock
             playStock()

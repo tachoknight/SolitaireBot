@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0F1C46CF254A0D670041E8C8 /* int+sequencetype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F1C46CE254A0D670041E8C8 /* int+sequencetype.swift */; };
 		0F8E6F7E252171C100FCE251 /* optional+forceunwrapped.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F8E6F7D252171C100FCE251 /* optional+forceunwrapped.swift */; };
 		0F9306782514088600700B5C /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9306772514088600700B5C /* main.swift */; };
 		0F93068025140A9000700B5C /* card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F93067F25140A9000700B5C /* card.swift */; };
@@ -35,6 +36,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0F1C46CE254A0D670041E8C8 /* int+sequencetype.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "int+sequencetype.swift"; sourceTree = "<group>"; };
 		0F8E6F7D252171C100FCE251 /* optional+forceunwrapped.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "optional+forceunwrapped.swift"; sourceTree = "<group>"; };
 		0F9306742514088600700B5C /* SolitaireBot */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SolitaireBot; sourceTree = BUILT_PRODUCTS_DIR; };
 		0F9306772514088600700B5C /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
@@ -91,6 +93,7 @@
 				0FA778632528B599000CDD34 /* Game */,
 				0F8E6F7D252171C100FCE251 /* optional+forceunwrapped.swift */,
 				0FC51312251D418E0087D807 /* move.swift */,
+				0F1C46CE254A0D670041E8C8 /* int+sequencetype.swift */,
 			);
 			path = SolitaireBot;
 			sourceTree = "<group>";
@@ -135,7 +138,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1200;
-				LastUpgradeCheck = 1200;
+				LastUpgradeCheck = 1210;
 				TargetAttributes = {
 					0F9306732514088600700B5C = {
 						CreatedOnToolsVersion = 12.0;
@@ -171,6 +174,7 @@
 				0F930687251410DA00700B5C /* foundation.swift in Sources */,
 				0FC51313251D418E0087D807 /* move.swift in Sources */,
 				0FEB5D36254228C200A00CF1 /* game+foundation_logic.swift in Sources */,
+				0F1C46CF254A0D670041E8C8 /* int+sequencetype.swift in Sources */,
 				0FA778612528B4C5000CDD34 /* game+play.swift in Sources */,
 				0F8E6F7E252171C100FCE251 /* optional+forceunwrapped.swift in Sources */,
 				0F93068025140A9000700B5C /* card.swift in Sources */,
@@ -302,6 +306,7 @@
 		0F93067C2514088600700B5C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = BXNBRJPZ7T;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -313,6 +318,7 @@
 		0F93067D2514088600700B5C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = BXNBRJPZ7T;
 				ENABLE_HARDENED_RUNTIME = YES;
