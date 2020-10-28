@@ -27,7 +27,7 @@ extension Game {
             playTableau()
             // Okay, we can't do anything more with the tableau,
             // so let's move on to the stock
-            playStock()
+            playFromWaste()
         } while gameDone == false
     }
 }
