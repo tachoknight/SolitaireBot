@@ -21,15 +21,15 @@ struct Game {
     // of what games have been played
     var serialNum: Int = 0
 
-    // The waste pile is where the cards go that cannot be
-    // played on any of the tableau piles
-    var waste = Pile()
-
     // The stock pile is where the cards are dealt from
     var stock = Pile()
-    // And this is the card array from the stock that
-    // we play from
-    var stockCardsInPlay = [Card]()
+   
+    // The waste pile is where the cards go from the stock
+    // to be played until either there are no more cards in
+    // the waste, or no more cards in the stock, in which
+    // case the waste pile gets moved over to the stock and
+    // we begin again
+    var waste = Pile()
 
     // The tableau is where the game is played, essentially; it
     // is here that cards are moved around, from column to column,

@@ -46,7 +46,7 @@ extension Game {
     // have three cards unless we literally don't have three cards to
     // give, otherwise we'll keep giving as many as we can
     mutating func fillPlayableStockCards() {
-        let numCardsToGet = NUMBER_OF_STOCK_CARDS - self.stockCardsInPlay.count
+        let numCardsToGet = NUMBER_OF_STOCK_CARDS - self.waste.cards.count
         if numCardsToGet == 0 {
             return
         }
@@ -56,7 +56,7 @@ extension Game {
         
         // And add the cards we just got to our playable ones
         for card in tempCards {
-            self.stockCardsInPlay.append(card)
+            self.waste.cards.append(card)
         }
     }
     
@@ -112,12 +112,12 @@ extension Game {
             self.fillPlayableStockCards()
             
             // Now let's see if we can play these cards on the foundations
-            for (i, card) in self.stockCardsInPlay.enumerated().reversed() {
+            for (i, card) in self.waste.cards.enumerated().reversed() {
                 // Can we move the card to the foundation?
                 var wasAbleToMove = tryToMoveToFoundation(card)
                 if wasAbleToMove {
                     // If we played it, remove it from our list
-                    self.stockCardsInPlay.remove(at: i)
+                    self.waste.cards.remove(at: i)
                 } else {
                     // Okay, we weren't able to move the card to the
                     // foundation, so let's see if we can move to a column
@@ -125,7 +125,7 @@ extension Game {
                     wasAbleToMove = self.tryToAddToTableau(card)
                     if wasAbleToMove {
                         // Yay, we played it, so remove it from our list
-                        self.stockCardsInPlay.remove(at: i)
+                        self.waste.cards.remove(at: i)
                     }
                 }
             
