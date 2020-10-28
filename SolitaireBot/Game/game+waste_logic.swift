@@ -46,7 +46,7 @@ extension Game {
             // The column may be empty, and we don't have a king, in
             // which case we cannot play here
             if isEmptyForColumn(col) == true {
-                return false
+                continue
             }
             
             // Now we need to get the bottom card of the
@@ -68,38 +68,39 @@ extension Game {
     }
     
     mutating func playFromWaste() {
-        var keepPlaying = true
-        
-        repeat {
-            // Get the right number of cards we need for this round
-            self.fillPlayableStockCards()
-            
-            // Now let's see if we can play these cards on the foundations
-            for (i, card) in self.waste.cards.enumerated().reversed() {
-                // Can we move the card to the foundation?
-                var wasAbleToMove = tryToMoveToFoundation(card)
+        // If we don't have any cards in the stock, then we
+        // need to get the waste pile cards over here.
+        if self.stock.cards.count == 0 {
+            self.moveWasteToStock()
+        }
+  
+        // Get the right number of cards we need for this round
+        self.addStockCardsToWasteToPlay()
+
+        // Now let's see if we can play these cards on the foundations
+        for (i, card) in self.waste.cards.enumerated().reversed() {
+            // Can we move the card to the foundation?
+            var wasAbleToMove = tryToMoveToFoundation(card)
+            if wasAbleToMove {
+                // If we played it, remove it from our list
+                self.waste.cards.remove(at: i)
+            } else {
+                // Okay, we weren't able to move the card to the
+                // foundation, so let's see if we can move to a column
+                // on the tableu
+                wasAbleToMove = self.tryToAddToTableau(card)
                 if wasAbleToMove {
-                    // If we played it, remove it from our list
+                    // Yay, we played it, so remove it from our list
                     self.waste.cards.remove(at: i)
-                } else {
-                    // Okay, we weren't able to move the card to the
-                    // foundation, so let's see if we can move to a column
-                    // on the tableu
-                    wasAbleToMove = self.tryToAddToTableau(card)
-                    if wasAbleToMove {
-                        // Yay, we played it, so remove it from our list
-                        self.waste.cards.remove(at: i)
-                    }
-                }
-            
-                // If we couldn't play on either the foundation
-                // or tableau, add the card to the waste
-                if wasAbleToMove == false {
-                    self.waste.cards.append(card)
-                    // and we're done with the stock
-                    keepPlaying = false
                 }
             }
-        } while keepPlaying == true
+            
+            // If we couldn't play on either the foundation
+            // or tableau, we're done working with the waste
+            // for the time being
+            if wasAbleToMove == false {
+                break
+            }
+        }
     }
 }

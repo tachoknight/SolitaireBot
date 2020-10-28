@@ -12,51 +12,35 @@ import Foundation
 let NUMBER_OF_STOCK_CARDS = 3
 
 extension Game {
-    // This function removes the cards from the stock
-    mutating func drawCardsFromStock(amount: Int) -> [Card] {
-        // If we don't have any cards in the stock, then we
-        // need to get the waste pile cards over here.
-        if self.stock.cards.count == 0 {
-            moveWasteToStock()
+    // This function draws cards from the stock and
+    // puts them on the waste to play
+    mutating func addStockCardsToWasteToPlay() {
+        // Start with the default number of cards
+        // we're supposed to draw
+        var numCardsToGet = NUMBER_OF_STOCK_CARDS
+        
+        // If there are not enough cards in the stock,
+        // get as many as we can
+        if numCardsToGet > self.stock.cards.count {
+            numCardsToGet = self.stock.cards.count
         }
         
-        // Make sure we can deal out the right number
-        // of cards asked for, and if there are fewer cards
-        // in the pile than we want, then we take whatever we
-        // can get
-        var trueAmount = amount
-        if trueAmount > self.stock.cards.count {
-            trueAmount = self.stock.cards.count
-        }
-        
-        // Now let's get the cards
-        var cards = [Card]()
-        for _ in trueAmount {
+        // Now for each card...
+        for _ in numCardsToGet {
+            // ... remove it from the stock ...
             var fuCard = self.stock.cards.removeFirst()
+            // ... and set it as face up ...
             fuCard.face = .up
-            cards.append(fuCard)
-        }
-     
-        // Okay, we're returning the cards, but not in playable
-        // order. That will be done by the caller
-        return cards
-    }
-    
-    // This function keeps self.stockCardsInPlay; we always want to
-    // have three cards unless we literally don't have three cards to
-    // give, otherwise we'll keep giving as many as we can
-    mutating func fillPlayableStockCards() {
-        let numCardsToGet = NUMBER_OF_STOCK_CARDS - self.waste.cards.count
-        if numCardsToGet == 0 {
-            return
-        }
-        
-        // Get the right number of cards from the stock
-        let tempCards = self.drawCardsFromStock(amount: numCardsToGet)
-        
-        // And add the cards we just got to our playable ones
-        for card in tempCards {
-            self.waste.cards.append(card)
+            // ... and insert it at the bottom of the
+            // the waste.
+            // HOWEVER! This is not how the
+            // game is played, the last card that is
+            // dealt is the first card we play. That is
+            // handled by the caller which will roll through
+            // the waste array in reverse order, so the
+            // last card we append here will, in fact, be the
+            // first card played
+            self.waste.cards.append(fuCard)
         }
     }
 }
