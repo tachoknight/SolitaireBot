@@ -344,14 +344,6 @@ extension Game {
             
             // Okay, what can we do with this column of cards?
             playColumn(col)
-            
-            // MARK: Debugging
-
-            printCurrentCardStatsFor(self)
-            tableau.printTableau(showAllCards: false)
-            for (_, v) in foundations {
-                v.printTopCard()
-            }
         }
         
         print("Done playing the tableau")

@@ -77,6 +77,8 @@ extension Game {
         // Get the right number of cards we need for this round
         self.addStockCardsToWasteToPlay()
 
+        waste.printPile("waste before")
+        
         // Now let's see if we can play these cards on the foundations
         for (i, card) in self.waste.cards.enumerated().reversed() {
             // Can we move the card to the foundation?

@@ -28,6 +28,15 @@ extension Game {
             // Okay, we can't do anything more with the tableau,
             // so let's move on to the stock
             playFromWaste()
+            
+            // MARK: Debugging
+            printCurrentCardStatsFor(self)
+            tableau.printTableau(showAllCards: false)
+            for (_, v) in foundations {
+                v.printTopCard()
+            }
+            waste.printPile("waste after")
+            print("=== round over ===")
         } while gameDone == false
     }
 }
