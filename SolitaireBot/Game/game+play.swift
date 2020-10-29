@@ -22,6 +22,9 @@ extension Game {
         // of this loop the game is done, regardless of whether
         // we won or not
         repeat {
+            let previousMoveNum = self.moveNum
+            print("=== Currently on move \(self.moveNum + 1) ===")
+            
             // First thing we do is check for anything on the
             // tableau that's playable
             playTableau()
@@ -37,6 +40,18 @@ extension Game {
             }
             waste.printPile("waste after")
             print("=== round over ===")
+            
+            // Is the game over?
+            // If no moves were made on this round, the
+            // game is over
+            if previousMoveNum == self.moveNum {
+                print("No moves were made!")
+                gameDone = true
+            }
+            
         } while gameDone == false
+        
+        print("Game was over in \(self.moveNum + 1) moves")
+        
     }
 }

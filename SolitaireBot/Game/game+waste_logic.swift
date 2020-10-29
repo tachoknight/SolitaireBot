@@ -28,9 +28,9 @@ extension Game {
         tableau.columns[to]!.cards.append(cardToAdd)
         
         // We moved a card, so let's add a Move record to indicate that
-        moveNum += 1
+        self.moveNum += 1
         let move = Move(turn: moveNum, card: cardToAdd, from: "Stock", to: "Col" + String(to))
-        moves.append(move)
+        self.moves.append(move)
     }
     
     mutating func tryToAddToTableau(_ testCard: Card) -> Bool {

@@ -321,11 +321,11 @@ extension Game {
                     }
                 }
                 
-                print("Here's how it looks now in col \(col)")
-                tableau.printTableau(showAllCards: true)
+                //print("Here's how it looks now in col \(col)")
+                //tableau.printTableau(showAllCards: true)
             }
         
-            pile?.printPile("col \(col)")
+            //pile?.printPile("col \(col)")
             
             // And assign the current state of the pile to the column
             tableau.columns[col] = pile
